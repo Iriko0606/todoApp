@@ -1,2 +1,4 @@
 webapp.log
 webapp.sql
+app/views/js/.DS_Store
+node_modules/*
