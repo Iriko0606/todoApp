@@ -83,7 +83,13 @@ func (u *User) DeleteUser() (err error) {
 
 func GetUserByEmail(email string) (user User, err error) {
 	user = User{}
-	cmd := `select id, uuid,name,email,password,created_at from user where email = ?`
+	cmd := `select id,
+	uuid,
+	name,
+	email,
+	password,
+	created_at 
+	from user where email = ?`
 	err = Db.QueryRow(cmd, email).Scan(
 		&user.ID,
 		&user.UUID,
@@ -91,6 +97,7 @@ func GetUserByEmail(email string) (user User, err error) {
 		&user.Email,
 		&user.PassWord,
 		&user.CreatedAt)
+	// fmt.Println(user)
 	return user, err
 }
 
@@ -126,7 +133,10 @@ func (session *Session) CheckSession() (valid bool, err error) {
 	cmd := `select id, uuid, email, user_id, created_at
 	from session where uuid = ?`
 
-	Db.QueryRow(cmd, session, session.UUID).Scan(&session.ID,
+	// fmt.Println("UUID:" + session.UUID)
+
+	Db.QueryRow(cmd, session.UUID).Scan(
+		&session.ID,
 		&session.UUID,
 		&session.Email,
 		&session.UserID,
@@ -141,4 +151,14 @@ func (session *Session) CheckSession() (valid bool, err error) {
 	}
 
 	return valid, err
+}
+
+func (session *Session) DeleteSessionByUUID() (err error) {
+	cmd := `delete from sessions where uuid = ?`
+	_, err = Db.Exec(cmd, session.UUID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return err
 }
