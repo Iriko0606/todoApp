@@ -1,4 +1,5 @@
 webapp.log
 webapp.sql
+.DS_Store
 app/views/js/.DS_Store
 node_modules/*
