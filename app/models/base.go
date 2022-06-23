@@ -5,51 +5,25 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"main/config"
+	"os"
+	"todo_app_heroku/config"
 
 	"github.com/google/uuid"
-
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/lib/pq"
 )
 
 var Db *sql.DB
 
 var err error
 
-const (
-	tableNameUser    = "user"
-	tableNameTodo    = "todo"
-	tableNameSession = "session"
-)
-
 func init() {
-	Db, err = sql.Open(config.Config.SQLDriver, config.Config.DbName)
+	url := os.Getenv("DATABASE_URL")
+	connection, _ := pq.ParseURL(url)
+	connection += "sslmode=require"
+	Db, err = sql.Open(config.Config.SQLDriver, connection)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	cmdU := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		uuid STRING NOT NULL UNIQUE,
-		name STRING,
-		email STRING,
-		password STRING,
-		created_at DATETIME)`, tableNameUser)
-	Db.Exec(cmdU)
-
-	cmdT := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		content TEXT,
-		user_id INTEGER,
-		created_at DATETIME)`, tableNameTodo)
-	Db.Exec(cmdT)
-
-	cmdS := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		uuid STRING NOT NULL UNIQUE,
-		email STRING,
-		user_id INTEGER,
-		created_at DATETIME)`, tableNameSession)
-	Db.Exec(cmdS)
 }
 
 func createUUID() (uuidobj uuid.UUID) {

@@ -13,7 +13,7 @@ type Todo struct {
 }
 
 func (u *User) CreateTodo(content string) (err error) {
-	cmd := `INSERT INTO todo (content, user_id, created_at) VALUES (?,?,?)`
+	cmd := `INSERT INTO todo (content, user_id, created_at) VALUES ($1,$2,$3)`
 	_, err = Db.Exec(cmd, content, u.ID, time.Now())
 	if err != nil {
 		log.Fatalln(err)
@@ -23,7 +23,7 @@ func (u *User) CreateTodo(content string) (err error) {
 }
 
 func GetTodo(id int) (todo Todo, err error) {
-	cmd := `SELECT id, content, user_id, created_at from todo where id = ?`
+	cmd := `SELECT id, content, user_id, created_at from todo where id = $1`
 	todo = Todo{}
 	err = Db.QueryRow(cmd, id).Scan(&todo.ID,
 		&todo.Content,
@@ -57,7 +57,7 @@ func GetTodos() (todos []Todo, err error) {
 }
 
 func (u *User) GetTodosByUser() (todos []Todo, err error) {
-	cmd := `select id, content, user_id, created_at from todo where user_id = ?`
+	cmd := `select id, content, user_id, created_at from todo where user_id = $1`
 	rows, err := Db.Query(cmd, u.ID)
 	if err != nil {
 		log.Fatalln(err)
@@ -82,7 +82,7 @@ func (u *User) GetTodosByUser() (todos []Todo, err error) {
 }
 
 func (t *Todo) UpdateTodo() (err error) {
-	cmd := `update todo set content = ?, user_id = ? where id = ?`
+	cmd := `update todo set content = $1, user_id = $2 where id = $3`
 	_, err = Db.Exec(cmd, t.Content, t.UserID, t.ID)
 	if err != nil {
 		log.Fatalln(err)
@@ -92,7 +92,7 @@ func (t *Todo) UpdateTodo() (err error) {
 }
 
 func (t *Todo) DeleteTodo() (err error) {
-	cmd := `delete from todo where id = ?`
+	cmd := `delete from todo where id = $1`
 	_, err = Db.Exec(cmd, t.ID)
 	if err != nil {
 		log.Fatalln(err)

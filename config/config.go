@@ -2,7 +2,7 @@ package config
 
 import (
 	"log"
-	"main/utils"
+	"todo_app_heroku/utils"
 
 	"gopkg.in/go-ini/ini.v1"
 )
