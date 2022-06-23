@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"log"
-	"main/app/models"
 	"net/http"
+	"todo_app_heroku/app/models"
 )
 
 func signup(w http.ResponseWriter, r *http.Request) {

@@ -3,11 +3,12 @@ package controllers
 import (
 	"fmt"
 	"html/template"
-	"main/app/models"
-	"main/config"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
+	"todo_app_heroku/app/models"
+	"todo_app_heroku/config"
 )
 
 func generateHTML(w http.ResponseWriter, data interface{}, filenames ...string) {
@@ -34,7 +35,9 @@ func StartMainServer() error {
 	http.HandleFunc("/todos/edit/", parseURL(todoEdit))
 	http.HandleFunc("/todos/update/", parseURL(todoUpdate))
 	http.HandleFunc("/todos/delete/", parseURL(todoDelete))
-	return http.ListenAndServe(":"+config.Config.Port, nil)
+
+	port := os.Getenv("PORT")
+	return http.ListenAndServe(":"+port, nil)
 }
 
 func session(w http.ResponseWriter, r *http.Request) (session models.Session, err error) {

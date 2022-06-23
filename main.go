@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"main/app/controllers"
-	"main/app/models"
+	"todo_app_heroku/app/controllers"
+	"todo_app_heroku/app/models"
 )
 
 func main() {
 	fmt.Println(models.Db)
 
 	controllers.StartMainServer()
-
 }
